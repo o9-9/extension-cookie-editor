@@ -85,45 +85,25 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
         const getAllCookiesParams = {
           url: request.params.url,
         };
-        if (browserDetector.supportsPromises()) {
-          browserDetector
-            .getApi()
-            .cookies.getAll(getAllCookiesParams)
-            .then(sendResponse);
-        } else {
-          browserDetector
-            .getApi()
-            .cookies.getAll(getAllCookiesParams, sendResponse);
-        }
+        browserDetector
+          .getApi()
+          .cookies.getAll(getAllCookiesParams)
+          .then(sendResponse);
         return true;
       }
       case 'saveCookie': {
-        if (browserDetector.supportsPromises()) {
-          browserDetector
-            .getApi()
-            .cookies.set(request.params.cookie)
-            .then(
-              cookie => {
-                sendResponse(null, cookie);
-              },
-              error => {
-                console.error('Failed to create cookie', error);
-                sendResponse(error.message, null);
-              }
-            );
-        } else {
-          browserDetector
-            .getApi()
-            .cookies.set(request.params.cookie, cookie => {
-              if (cookie) {
-                sendResponse(null, cookie);
-              } else {
-                const error = browserDetector.getApi().runtime.lastError;
-                console.error('Failed to create cookie', error);
-                sendResponse(error.message, cookie);
-              }
-            });
-        }
+        browserDetector
+          .getApi()
+          .cookies.set(request.params.cookie)
+          .then(
+            cookie => {
+              sendResponse(null, cookie);
+            },
+            error => {
+              console.error('Failed to create cookie', error);
+              sendResponse(error.message, null);
+            }
+          );
         return true;
       }
       case 'removeCookie': {
@@ -131,14 +111,10 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
           name: request.params.name,
           url: request.params.url,
         };
-        if (browserDetector.supportsPromises()) {
-          browserDetector
-            .getApi()
-            .cookies.remove(removeParams)
-            .then(sendResponse);
-        } else {
-          browserDetector.getApi().cookies.remove(removeParams, sendResponse);
-        }
+        browserDetector
+          .getApi()
+          .cookies.remove(removeParams)
+          .then(sendResponse);
         return true;
       }
       case 'permissionsContains': {

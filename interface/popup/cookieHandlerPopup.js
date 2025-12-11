@@ -14,16 +14,10 @@ export class CookieHandlerPopup extends GenericCookieHandler {
     this.isReady = false;
     this.currentTabId = null;
 
-    if (this.browserDetector.supportsPromises()) {
-      this.browserDetector
-        .getApi()
-        .tabs.query({ active: true, currentWindow: true })
-        .then(this.init);
-    } else {
-      this.browserDetector
-        .getApi()
-        .tabs.query({ active: true, currentWindow: true }, this.init);
-    }
+    this.browserDetector
+      .getApi()
+      .tabs.query({ active: true, currentWindow: true })
+      .then(this.init);
   }
 
   /**
@@ -72,19 +66,10 @@ export class CookieHandlerPopup extends GenericCookieHandler {
       (changeInfo.url || changeInfo.status === 'complete')
     ) {
       console.log('tabChanged!');
-      if (this.browserDetector.supportsPromises()) {
-        this.browserDetector
-          .getApi()
-          .tabs.query({ active: true, currentWindow: true })
-          .then(this.updateCurrentTab);
-      } else {
-        this.browserDetector
-          .getApi()
-          .tabs.query(
-            { active: true, currentWindow: true },
-            this.updateCurrentTab
-          );
-      }
+      this.browserDetector
+        .getApi()
+        .tabs.query({ active: true, currentWindow: true })
+        .then(this.updateCurrentTab);
     }
   };
 
@@ -93,19 +78,10 @@ export class CookieHandlerPopup extends GenericCookieHandler {
    * @param {object} activeInfo Info about the event.
    */
   onTabActivated = activeInfo => {
-    if (this.browserDetector.supportsPromises()) {
-      this.browserDetector
-        .getApi()
-        .tabs.query({ active: true, currentWindow: true })
-        .then(this.updateCurrentTab);
-    } else {
-      this.browserDetector
-        .getApi()
-        .tabs.query(
-          { active: true, currentWindow: true },
-          this.updateCurrentTab
-        );
-    }
+    this.browserDetector
+      .getApi()
+      .tabs.query({ active: true, currentWindow: true })
+      .then(this.updateCurrentTab);
   };
 
   /**

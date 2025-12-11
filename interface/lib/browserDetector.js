@@ -10,17 +10,8 @@ export class BrowserDetector {
    */
   constructor() {
     console.log('constructing a browserDetector');
-    this.namespace = chrome || window.browser || window.chrome;
-    this.supportPromises = false;
+    this.namespace = window.browser || chrome || window.chrome;
     this.supportSidePanel = false;
-
-    try {
-      this.supportPromises =
-        this.namespace.runtime.getPlatformInfo() instanceof Promise;
-      console.info('Promises support: ', this.supportPromises);
-    } catch (e) {
-      /* empty */
-    }
 
     try {
       this.supportSidePanel = typeof this.getApi().sidePanel !== 'undefined';
@@ -77,15 +68,6 @@ export class BrowserDetector {
    */
   isSafari() {
     return Env.browserName === Browsers.Safari;
-  }
-
-  /**
-   * Checks if the current browser's API supports promises.
-   * @return {boolean} true if the current browser's API supports promises,
-   *     otherwise false.
-   */
-  supportsPromises() {
-    return this.supportPromises;
   }
 
   /**

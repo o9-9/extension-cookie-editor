@@ -39,17 +39,13 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
 
   /**
    * Gets all the cookies for the current tab.
-   * @param {function} callback
+   * @return {Promise}
    */
-  getAllCookies(callback) {
-    this.sendMessage(
-      'getAllCookies',
-      {
-        url: this.currentTab.url,
-        storeId: this.currentTab.cookieStoreId,
-      },
-      callback
-    );
+  async getAllCookies() {
+    return this.sendMessage('getAllCookies', {
+      url: this.currentTab.url,
+      storeId: this.currentTab.cookieStoreId,
+    });
   }
 
   /**
@@ -57,32 +53,26 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
    * one.
    * @param {Cookie} cookie Cookie's data.
    * @param {string} url The url to attach the cookie to.
-   * @param {function} callback
+   * @return {Promise}
    */
-  saveCookie(cookie, url, callback) {
-    this.sendMessage(
-      'saveCookie',
-      { cookie: this.prepareCookie(cookie, url) },
-      callback
-    );
+  async saveCookie(cookie, url) {
+    return this.sendMessage('saveCookie', {
+      cookie: this.prepareCookie(cookie, url),
+    });
   }
 
   /**
    * Removes a cookie from the browser.
    * @param {string} name The name of the cookie to remove.
    * @param {string} url The url that the cookie is attached to.
-   * @param {function} callback
+   * @return {Promise}
    */
-  removeCookie(name, url, callback) {
-    this.sendMessage(
-      'removeCookie',
-      {
-        name: name,
-        url: url,
-        storeId: this.currentTab.cookieStoreId,
-      },
-      callback
-    );
+  async removeCookie(name, url) {
+    return this.sendMessage('removeCookie', {
+      name: name,
+      url: url,
+      storeId: this.currentTab.cookieStoreId,
+    });
   }
 
   /**
@@ -135,9 +125,7 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
    */
   updateCurrentTab = callback => {
     const self = this;
-    this.sendMessage(
-      'getCurrentTab',
-      null,
+    this.sendMessage('getCurrentTab', null).then(
       function (tabInfo) {
         const newTab =
           tabInfo[0].id !== self.currentTabId ||
@@ -161,19 +149,11 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
    * Sends a message to the background script.
    * @param {string} type The type of the message.
    * @param {object} params The payload of the message
-   * @param {function} callback
-   * @param {function} errorCallback
+   * @return {Promise}
    */
-  sendMessage(type, params, callback, errorCallback) {
-    if (this.browserDetector.supportsPromises()) {
-      this.browserDetector
-        .getApi()
-        .runtime.sendMessage({ type: type, params: params })
-        .then(callback, errorCallback);
-    } else {
-      this.browserDetector
-        .getApi()
-        .runtime.sendMessage({ type: type, params: params }, callback);
-    }
+  sendMessage(type, params) {
+    return this.browserDetector
+      .getApi()
+      .runtime.sendMessage({ type: type, params: params });
   }
 }
